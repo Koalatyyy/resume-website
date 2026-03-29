@@ -1,7 +1,5 @@
 # resume-website
 
-## Overview
-TODO: describe the project.
+Personal resume site for Thomas Haggath, Senior Cloud Security Engineer.
 
-## Getting Started
-TODO: setup steps.
+Live at [haggath.re](https://www.haggath.re).
