@@ -22,7 +22,13 @@
       "Bash(nslookup www.haggath.re)",
       "Bash(curl -sI https://www.haggath.re)",
       "Bash(nslookup -type=SOA haggath.re)",
-      "Bash(curl -sI -4 https://www.haggath.re)"
+      "Bash(curl -sI -4 https://www.haggath.re)",
+      "Bash(curl -sI https://haggath.re)",
+      "Bash(curl -sv https://haggath.re)",
+      "Bash(nslookup haggath.re 8.8.8.8)",
+      "Bash(curl -sv http://haggath.re)",
+      "Bash(curl -sv --ipv4 https://haggath.re)",
+      "Bash(curl -sv --resolve haggath.re:443:104.21.64.69 https://haggath.re)"
     ]
   }
 }
