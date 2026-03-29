@@ -49,7 +49,8 @@
       },
       "sameAs": [
         "https://www.linkedin.com/in/thomas-haggath/",
-        "https://twitter.com/Koalatyyy"
+        "https://twitter.com/Koalatyyy",
+        "https://github.com/Koajakins"
       ],
       "worksFor": {
         "@type": "Organization",
@@ -77,6 +78,8 @@
     }
   }
   </script>
+
+  <link rel="preload" as="image" href="profile.webp" type="image/webp">
 
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -184,7 +187,10 @@
           </div>
         </div>
         <div class="hero-photo">
-          <img src="profile.jpg" alt="Thomas Haggath, Senior Cloud Security Engineer" class="profile-img" loading="lazy">
+          <picture>
+            <source srcset="profile.webp" type="image/webp">
+            <img src="profile.jpg" alt="Thomas Haggath, Senior Cloud Security Engineer" class="profile-img" loading="eager" fetchpriority="high">
+          </picture>
         </div>
       </div>
       <div class="hero-scroll-hint" aria-hidden="true">
