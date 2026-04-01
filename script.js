@@ -3,7 +3,7 @@
 // ─── Console easter egg ───────────────────────────────────────────────────────
 
 console.log('%c TH ', 'background:#38bdf8;color:#0f172a;font-size:20px;font-weight:800;padding:4px 12px;border-radius:4px;');
-console.log('%c Thomas Haggath — Senior Cloud Security Engineer', 'color:#f1f5f9;font-size:13px;font-weight:600;');
+console.log('%c Thomas Haggath — Senior AWS Cloud Engineer', 'color:#f1f5f9;font-size:13px;font-weight:600;');
 console.log('%c Open to U.S. security engineering roles.', 'color:#94a3b8;font-size:12px;');
 console.log('%c ', '');
 console.log('%c You found the console. That\'s a good sign.', 'color:#38bdf8;font-size:12px;');
@@ -114,8 +114,9 @@ setTimeout(type, 600);
 
 // ─── Active nav link ──────────────────────────────────────────────────────────
 
-const sections  = document.querySelectorAll('main section[id]');
+const sections   = document.querySelectorAll('main section[id]');
 const navAnchors = document.querySelectorAll('.nav-links a');
+const navHeight  = getComputedStyle(document.documentElement).getPropertyValue('--nav-height').trim();
 
 const sectionObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -127,8 +128,7 @@ const sectionObserver = new IntersectionObserver((entries) => {
     }
   });
 }, {
-  rootMargin: `-${getComputedStyle(document.documentElement)
-    .getPropertyValue('--nav-height').trim()} 0px -55% 0px`,
+  rootMargin: `-${navHeight} 0px -55% 0px`,
   threshold: 0,
 });
 
