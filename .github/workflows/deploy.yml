@@ -5,8 +5,19 @@ on:
     branches: [main]
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Validate HTML
+        run: |
+          curl -s -o /tmp/vnu.jar https://github.com/validator/validator/releases/latest/download/vnu.jar
+          java -jar /tmp/vnu.jar --errors-only index.html
+
   deploy:
     runs-on: ubuntu-latest
+    needs: validate
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -43,3 +54,16 @@ jobs:
       - name: Ping IndexNow
         run: |
           curl -s "https://api.indexnow.org/indexnow?url=https://www.haggath.re/&key=97dad8073f95443d944e286b8cf22bb8"
+
+      - name: Submit sitemap to Google
+        run: |
+          curl -s "https://www.google.com/ping?sitemap=https://www.haggath.re/sitemap.xml"
+
+      - name: Uptime check
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://www.haggath.re)
+          if [ "$STATUS" != "200" ]; then
+            echo "Site returned HTTP $STATUS — deploy may have failed"
+            exit 1
+          fi
+          echo "Site is up (HTTP $STATUS)"
