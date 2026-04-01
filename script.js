@@ -369,3 +369,153 @@ cmdBackdrop.addEventListener('click', closePalette);
 cmdList.querySelectorAll('.cmd-item').forEach(item => {
   item.addEventListener('click', () => activateItem(item));
 });
+
+// ─── Terminal ─────────────────────────────────────────────────────────────────
+
+(function () {
+  const termBody  = document.getElementById('term-body');
+  const termInput = document.getElementById('term-input');
+  const termWin   = document.querySelector('.term-window');
+  if (!termBody || !termInput) return;
+
+  const cmdHistory = [];
+  let histIdx = -1;
+
+  const COMMANDS = {
+    help() {
+      return [
+        { text: 'Available commands:', cls: 'term-ok' },
+        { text: '  whoami      — about me' },
+        { text: '  skills      — technical skills' },
+        { text: '  experience  — work history' },
+        { text: '  projects    — personal projects' },
+        { text: '  contact     — get in touch' },
+        { text: '  ls          — list directory' },
+        { text: '  cat cv.pdf  — download CV' },
+        { text: '  clear       — clear terminal' },
+      ];
+    },
+    whoami() {
+      return [
+        { text: 'Thomas Haggath' },
+        { text: 'Senior AWS Cloud Engineer' },
+        { text: '6+ years · Security incident response & detection engineering' },
+        { text: 'Wiltshire, UK — targeting U.S. relocation' },
+        { text: 'Open to H-1B / L-1 sponsorship', cls: 'term-ok' },
+      ];
+    },
+    skills() {
+      return [
+        { text: 'Cloud:      CloudTrail, GuardDuty, Security Hub, Macie, IAM, KMS' },
+        { text: 'SIEM:       Splunk, Splunk Cloud Enterprise' },
+        { text: 'IaC:        Terraform' },
+        { text: 'Languages:  Python, Bash' },
+        { text: 'Standards:  NIST 800-61, ISO 27001' },
+        { text: 'Other:      CrowdStrike, Control Tower, VPC Flow Logs' },
+      ];
+    },
+    experience() {
+      return [
+        { text: '2024–Present  Cloud Support Engineer II  · Amazon Web Services' },
+        { text: '2024          InfoSec Compliance Analyst · InfoSum Ltd' },
+        { text: '2021–2024     Cloud Support Engineer II  · Amazon Web Services' },
+        { text: '2020–2021     Cloud Support Engineer I   · Amazon Web Services' },
+        { text: '2019–2020     Cloud Support Associate    · Amazon Web Services' },
+        { text: '2017–2018     Software Tester Intern     · Evidence Talks Ltd' },
+      ];
+    },
+    projects() {
+      return [
+        { text: 'PacketTracer  github.com/Koajakins/PacketTracer' },
+        { text: '              Real-time packet capture with topology visualisation', cls: 'term-muted' },
+        { text: 'A-LiME        github.com/Koajakins/A-LiME' },
+        { text: '              Automated Linux memory extraction tooling', cls: 'term-muted' },
+        { text: 'haggath.re    haggath.re' },
+        { text: '              This site', cls: 'term-muted' },
+      ];
+    },
+    contact() {
+      return [
+        { text: 'Email:     tom@haggath.re' },
+        { text: 'LinkedIn:  linkedin.com/in/thomas-haggath' },
+        { text: 'GitHub:    github.com/Koajakins' },
+        { text: '' },
+        { text: 'Or scroll down to #contact to send a message.', cls: 'term-muted' },
+      ];
+    },
+    ls() {
+      return [{ text: 'cv.pdf  index.html  style.css  script.js  profile.webp  robots.txt  sitemap.xml' }];
+    },
+    'cat cv.pdf'() {
+      setTimeout(() => document.querySelector('a[download]')?.click(), 300);
+      return [{ text: 'Initiating download...', cls: 'term-ok' }];
+    },
+    clear() {
+      termBody.innerHTML = '';
+      return null;
+    },
+    sudo() {
+      return [{ text: 'Permission denied. This incident will be reported.', cls: 'term-error' }];
+    },
+    'sudo rm -rf /'() {
+      return [{ text: 'Permission denied. Nice try.', cls: 'term-error' }];
+    },
+  };
+
+  function printLines(lines) {
+    lines.forEach(({ text, cls }) => {
+      const el = document.createElement('div');
+      el.className = 'term-line' + (cls ? ` ${cls}` : '');
+      el.textContent = text ?? '';
+      termBody.appendChild(el);
+    });
+    termBody.scrollTop = termBody.scrollHeight;
+  }
+
+  function printPrompt(cmd) {
+    const el = document.createElement('div');
+    el.className = 'term-line term-cmd';
+    el.textContent = `tom@haggath.re:~$ ${cmd}`;
+    termBody.appendChild(el);
+  }
+
+  function run(raw) {
+    const cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+    cmdHistory.unshift(raw);
+    histIdx = -1;
+    printPrompt(raw);
+    const handler = COMMANDS[cmd];
+    if (handler) {
+      const out = handler();
+      if (out) printLines(out);
+    } else {
+      printLines([{ text: `command not found: ${cmd}  (try 'help')`, cls: 'term-error' }]);
+    }
+    printLines([{ text: '' }]);
+  }
+
+  printLines([
+    { text: '──────────────────────────────────────────' },
+    { text: "  Welcome. Type 'help' to get started.", cls: 'term-ok' },
+    { text: '──────────────────────────────────────────' },
+    { text: '' },
+  ]);
+
+  termInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const val = termInput.value;
+      termInput.value = '';
+      run(val);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (histIdx < cmdHistory.length - 1) termInput.value = cmdHistory[++histIdx];
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (histIdx > 0) termInput.value = cmdHistory[--histIdx];
+      else { histIdx = -1; termInput.value = ''; }
+    }
+  });
+
+  termWin.addEventListener('click', () => termInput.focus());
+})();
