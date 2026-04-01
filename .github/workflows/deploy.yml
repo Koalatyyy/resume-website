@@ -12,7 +12,7 @@ jobs:
 
       - name: Validate HTML
         run: |
-          curl -s -o /tmp/vnu.jar https://github.com/validator/validator/releases/latest/download/vnu.jar
+          curl -sL -o /tmp/vnu.jar https://github.com/validator/validator/releases/latest/download/vnu.jar
           java -jar /tmp/vnu.jar --errors-only index.html
 
   deploy:
