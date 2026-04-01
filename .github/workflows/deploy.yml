@@ -33,6 +33,13 @@ jobs:
             **/CLAUDE.md
             **/.htaccess
 
+      - name: Purge Cloudflare cache
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CF_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}'
+
       - name: Ping IndexNow
         run: |
           curl -s "https://api.indexnow.org/indexnow?url=https://www.haggath.re/&key=97dad8073f95443d944e286b8cf22bb8"
