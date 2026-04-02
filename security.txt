@@ -1,0 +1,3 @@
+Contact: mailto:tom@haggath.re
+Expires: 2031-12-02T11:17:00Z
+Canonical: https://haggath.re/security.txt
