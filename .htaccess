@@ -1,7 +1,7 @@
 ErrorDocument 404 /404.html
 
 # Cache static assets
-<FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|pdf)$">
+<FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|pdf|woff2)$">
   Header set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
 <FilesMatch "\.(css|js)$">
@@ -22,4 +22,4 @@ Header always set X-Content-Type-Options "nosniff"
 Header always set X-Frame-Options "DENY"
 Header always set Referrer-Policy "strict-origin-when-cross-origin"
 Header always set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-Header always set Content-Security-Policy "default-src 'none'; script-src 'self' https://plausible.io https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src https://api.web3forms.com https://plausible.io; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none';"
+Header always set Content-Security-Policy "default-src 'none'; script-src 'self' https://plausible.io https://static.cloudflareinsights.com 'unsafe-inline'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src https://api.web3forms.com https://plausible.io; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none';"
