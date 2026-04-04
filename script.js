@@ -87,8 +87,10 @@ document.querySelector('.nav-logo').addEventListener('click', e => {
 const typedEl  = document.getElementById('typed-text');
 const phrases  = ['Senior AWS Cloud Engineer', 'AWS Incident Responder', 'Detection Engineer'];
 let phraseIdx  = 0;
-let charIdx    = 0;
+let charIdx    = phrases[0].length;
 let deleting   = false;
+
+typedEl.textContent = phrases[0];
 
 function type() {
   const current = phrases[phraseIdx];
@@ -110,7 +112,9 @@ function type() {
   setTimeout(type, deleting ? 35 : 65);
 }
 
-setTimeout(type, 600);
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  setTimeout(() => { deleting = true; type(); }, 2200);
+}
 
 // ─── Active nav link ──────────────────────────────────────────────────────────
 
@@ -183,6 +187,10 @@ function animateCounter(el) {
   if (!match) return;
   const target   = parseInt(match[1], 10);
   const suffix   = match[2];
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = target + suffix;
+    return;
+  }
   const duration = 1200;
   const start    = performance.now();
   (function tick(now) {
@@ -385,6 +393,15 @@ termToggle.addEventListener('click', e => {
     termSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     document.getElementById('term-input')?.focus();
   }
+});
+
+document.querySelectorAll('.hero-term-link').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    termSection.hidden = false;
+    termSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('term-input')?.focus();
+  });
 });
 
 // ─── Terminal ─────────────────────────────────────────────────────────────────
