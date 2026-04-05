@@ -4,7 +4,7 @@
 
 console.log('%c TH ', 'background:#38bdf8;color:#0f172a;font-size:20px;font-weight:800;padding:4px 12px;border-radius:4px;');
 console.log('%c Thomas Haggath — Senior AWS Cloud Engineer', 'color:#f1f5f9;font-size:13px;font-weight:600;');
-console.log('%c Open to U.S. security engineering roles.', 'color:#94a3b8;font-size:12px;');
+console.log('%c UK-based, Chicago-bound. Open to U.S. security engineering roles.', 'color:#94a3b8;font-size:12px;');
 console.log('%c ', '');
 console.log('%c You found the console. That\'s a good sign.', 'color:#38bdf8;font-size:12px;');
 console.log('%c Press Ctrl+K (or Cmd+K) to open the command palette.', 'color:#5a7191;font-size:12px;');
@@ -434,8 +434,8 @@ document.querySelectorAll('.hero-term-link').forEach(el => {
         { text: 'Thomas Haggath' },
         { text: 'Senior AWS Cloud Engineer' },
         { text: '7+ years · Security incident response & detection engineering' },
-        { text: 'Wiltshire, UK — targeting U.S. relocation' },
-        { text: 'Open to H-1B / L-1 sponsorship', cls: 'term-ok' },
+        { text: 'Wiltshire, UK — Chicago-bound, open to U.S. roles broadly' },
+        { text: 'Happy to discuss H-1B / L-1 sponsorship', cls: 'term-ok' },
       ];
     },
     skills() {
