@@ -525,7 +525,7 @@ document.querySelectorAll('.hero-term-link').forEach(el => {
     cmdHistory.unshift(raw);
     histIdx = -1;
     printPrompt(raw);
-    const handler = COMMANDS[cmd];
+    const handler = Object.hasOwn(COMMANDS, cmd) ? COMMANDS[cmd] : undefined;
     if (handler) {
       const out = handler();
       if (out) printLines(out);
