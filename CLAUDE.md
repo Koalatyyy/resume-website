@@ -15,3 +15,12 @@ resume.pdf   — drop your CV here (referenced by download buttons)
 - No frameworks or dependencies; open index.html directly in a browser
 - All placeholder content is marked with `↓` comments in index.html
 - Color tokens live in `:root` in style.css — change `--accent` to retheme
+- Do not be overly verbose when searching via the web for suggestions, reduce token usage
+
+
+# Claude for Chrome
+
+- Use `read_page` to get element refs from the accessibility tree
+- Use `find` to locate elements by description
+- Click/interact using `ref`, not coordinates
+- NEVER take screenshots unless explicitly requested by the user
