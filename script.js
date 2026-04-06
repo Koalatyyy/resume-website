@@ -250,7 +250,8 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
     e.preventDefault();
 
     const formData = new FormData(form);
-    formData.append('access_key', 'dedb1847-188d-4387-a324-63e93dfbf244');
+    const payload = Object.fromEntries(formData);
+    payload.access_key = 'dedb1847-188d-4387-a324-63e93dfbf244';
 
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Sending\u2026';
@@ -261,7 +262,8 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
 
