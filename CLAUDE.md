@@ -13,6 +13,9 @@ sitemap.xml    — lastmod auto-updated by CI on deploy
 resume.pdf     — linked by download buttons
 ```
 
+## Repository
+`Haggath/resume-website` on GitHub (main branch)
+
 ## Deployment
 Push to `main` → GitHub Actions → FTP to OVH → Cloudflare cache purge → IndexNow ping.
 No manual deploy. `.htaccess` IS deployed (not excluded). CI also validates HTML with vnu.jar.
