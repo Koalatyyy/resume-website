@@ -463,8 +463,12 @@ document.querySelectorAll('.hero-term-link').forEach(el => {
     },
     projects() {
       return [
+        { text: 'automated-ctfs       github.com/Koalatyyy/hackthebox-automation-script' },
+        { text: '                     TypeScript CLI automating HackTheBox recon via WSL bridge', cls: 'term-muted' },
         { text: 'SecurityObservatory  github.com/Koalatyyy/aws-security-siem' },
         { text: '                     AI-powered threat detection across 12+ AWS services', cls: 'term-muted' },
+        { text: 'PhishingAnalyzer     github.com/Koalatyyy/phishing-analysis-app' },
+        { text: '                     Browser-based email header & URL phishing analysis, 63 unit tests', cls: 'term-muted' },
         { text: 'PacketTracer         github.com/Koalatyyy/PacketTracer' },
         { text: '                     Real-time packet capture with topology visualisation', cls: 'term-muted' },
         { text: 'A-LiME               github.com/Koalatyyy/A-LiME' },
