@@ -15,7 +15,7 @@ description: Writing on AWS security, threat detection, and cloud defence by Tho
   <ul class="post-list">
     {% for post in collections.posts %}
     <li>
-      <a href="{{ post.url }}" class="post-title">{{ post.data.title }}</a>
+      <a href="/blog{{ post.url }}" class="post-title">{{ post.data.title }}</a>
       <div class="post-date">{{ post.date | readableDate }}</div>
       {% if post.data.excerpt %}<p class="post-excerpt">{{ post.data.excerpt }}</p>{% endif %}
     </li>
