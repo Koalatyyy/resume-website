@@ -1,0 +1,9 @@
+{
+  "name": "resume-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "blog:dev": "cd blog && npx @11ty/eleventy --serve",
+    "blog:build": "cd blog && npx @11ty/eleventy"
+  }
+}
