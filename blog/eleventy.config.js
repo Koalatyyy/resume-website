@@ -5,6 +5,7 @@ module.exports = function (eleventyConfig) {
   // Pass through shared assets from root
   eleventyConfig.addPassthroughCopy({ "../style.css": "style.css" });
   eleventyConfig.addPassthroughCopy({ "../fonts": "fonts" });
+  eleventyConfig.addPassthroughCopy({ "src/htaccess": ".htaccess" });
 
   // Sort posts newest first
   eleventyConfig.addCollection("posts", function (collectionApi) {
