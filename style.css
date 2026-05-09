@@ -211,6 +211,7 @@ section {
   align-items: center;
   gap: 0.125rem;
   flex: 1;
+  justify-content: center;
 }
 
 .nav-links a {
