@@ -1,0 +1,27 @@
+---
+layout: base.njk
+title: Writing
+description: Writing on AWS security, threat detection, and cloud defence by Thomas Haggath.
+---
+<div class="blog-prose">
+  <a href="/" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to CV
+  </a>
+  <h1>Writing</h1>
+  <p style="color:var(--text-muted);margin-bottom:2rem;">AWS security, threat detection, and cloud defence.</p>
+
+  {% if collections.posts.length %}
+  <ul class="post-list">
+    {% for post in collections.posts %}
+    <li>
+      <a href="{{ post.url }}" class="post-title">{{ post.data.title }}</a>
+      <div class="post-date">{{ post.date | readableDate }}</div>
+      {% if post.data.excerpt %}<p class="post-excerpt">{{ post.data.excerpt }}</p>{% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p style="color:var(--text-muted);">No posts yet. Check back soon.</p>
+  {% endif %}
+</div>
