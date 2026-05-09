@@ -44,6 +44,14 @@ jobs:
           sed -i "s/\"dateModified\": \"[0-9-]*\"/\"dateModified\": \"$TODAY\"/" index.html
           sed -i "s|<lastmod>[0-9-]*</lastmod>|<lastmod>$TODAY</lastmod>|" sitemap.xml
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build blog
+        run: cd blog && npx @11ty/eleventy
+
       - name: Deploy to OVH via FTP
         uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
@@ -57,6 +65,19 @@ jobs:
             **/.git*/**
             **/.github/**
             **/CLAUDE.md
+            **/blog/src/**
+            **/blog/node_modules/**
+            **/blog/eleventy.config.js
+            **/blog/package.json
+
+      - name: Deploy blog to OVH via FTP
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./blog/_site/
+          server-dir: /www/blog/
 
       - name: Purge Cloudflare cache
         run: |
