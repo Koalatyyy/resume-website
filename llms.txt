@@ -1,12 +1,12 @@
-# Thomas Haggath — Senior AWS Cloud Engineer
+# Thomas Haggath — Cloud Security Engineer
 
-> Senior AWS Cloud Engineer at Amazon Web Services, specialising in security incident
+> Cloud Security Engineer at Amazon Web Services, specialising in security incident
 > response, detection engineering, and GuardDuty. UK-based; relocating to Chicago.
 > Open to U.S. cloud security roles. H-1B and L-1 sponsorship available.
 
 ## About
 - Full name: Thomas Haggath
-- Role: Senior AWS Cloud Engineer
+- Role: Cloud Security Engineer
 - Employer: Amazon Web Services (Amazon Managed Services)
 - Tenure: 7+ years at AWS Managed Services (Jun 2019 — present)
 - Location: Wiltshire, UK (Chicago-bound; open to U.S. roles broadly)
@@ -39,6 +39,9 @@
 - Phishing Header Analyzer — browser-based email header/URL phishing analysis tool; no server or API keys; SPF/DKIM/DMARC checks, URL heuristics, 63 unit tests — https://github.com/Koalatyyy/phishing-analysis-app
 - A-LiME — Python tooling for automated cross-compilation of Linux kernel modules and memory extraction with ADB integration — https://github.com/Koalatyyy/A-LiME
 
+## Writing
+- dev.to: AWS security, detection engineering, and cloud defence — https://dev.to/haggath
+
 ## Availability
 - Status: actively seeking U.S. cloud security roles; available for remote interviews immediately
 - Sponsorship: H-1B and L-1 available
@@ -48,4 +51,5 @@
 - Portfolio: https://www.haggath.re/
 - LinkedIn: https://www.linkedin.com/in/thomas-haggath/
 - GitHub: https://github.com/Koalatyyy
+- dev.to: https://dev.to/haggath
 - X: https://x.com/Koalatyyy
