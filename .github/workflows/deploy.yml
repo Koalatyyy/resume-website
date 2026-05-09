@@ -65,10 +65,7 @@ jobs:
             **/.git*/**
             **/.github/**
             **/CLAUDE.md
-            **/blog/src/**
-            **/blog/node_modules/**
-            **/blog/eleventy.config.js
-            **/blog/package.json
+            **/blog/**
 
       - name: Deploy blog to OVH via FTP
         uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
