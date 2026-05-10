@@ -22,15 +22,18 @@ layout: base.njk
   "dateModified": "{{ (updated or date) | htmlDateString }}",
   "image": "https://www.haggath.re/assets/og-card.jpg",
   "url": "https://www.haggath.re/blog{{ page.url }}",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.haggath.re/blog{{ page.url }}" },
   "author": {
     "@type": "Person",
+    "@id": "https://www.haggath.re/#person",
     "name": "Thomas Haggath",
-    "url": "https://www.haggath.re"
+    "url": "https://www.haggath.re/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Thomas Haggath",
-    "url": "https://www.haggath.re"
+    "url": "https://www.haggath.re/",
+    "logo": { "@type": "ImageObject", "url": "https://www.haggath.re/assets/og-card.jpg" }
   }
 }
 </script>

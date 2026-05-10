@@ -40,6 +40,8 @@
 - A-LiME — Python tooling for automated cross-compilation of Linux kernel modules and memory extraction with ADB integration — https://github.com/Koalatyyy/A-LiME
 
 ## Writing
+- Leveraging GuardDuty suppression rules to eliminate noise — https://www.haggath.re/blog/guardduty-suppression-rules/
+- Leveraging Macie suppression rules to eliminate noise — https://www.haggath.re/blog/macie-suppression-rules/
 - dev.to: AWS security, detection engineering, and cloud defence — https://dev.to/haggath
 
 ## Availability
