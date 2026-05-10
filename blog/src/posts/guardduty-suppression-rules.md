@@ -243,3 +243,16 @@ We covered GuardDuty's IP sets and entity lists, explaining the distinction betw
 We then compared trusted lists against suppression rules directly, highlighting that the key difference is not just scope but mechanism: trusted lists suppress at the source level before a finding exists, while suppression rules operate after generation, giving you the archived record.
 
 Finally, we walked through a realistic example finding for `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` to show what GuardDuty's JSON output looks like in practice and which fields matter most when triaging or writing suppression logic.
+
+---
+
+# Further Reading
+
+- [What is Amazon GuardDuty?](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
+- [GuardDuty EC2 finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-ec2.html)
+- [GuardDuty IAM finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-iam.html)
+- [GuardDuty S3 finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-s3.html)
+- [GuardDuty EKS finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-finding-types-eks-audit-logs.html)
+- [GuardDuty RDS finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty-finding-types-rds.html)
+- [Suppression rules in GuardDuty](https://docs.aws.amazon.com/guardduty/latest/ug/findings_suppression-rule.html)
+- [Customizing threat detection with entity lists and IP address lists](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_upload-lists.html)
