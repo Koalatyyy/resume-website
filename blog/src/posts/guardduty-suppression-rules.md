@@ -4,7 +4,7 @@ date: 2026-05-10
 excerpt: "How to use suppression rules, trusted IP lists, and threat intel lists to reduce GuardDuty alert noise."
 ---
 
-# What is GuardDuty?
+## What is GuardDuty?
 
 Amazon GuardDuty is a continuous threat detection service that monitors, analyses, and processes data sources and logs across your AWS environment. It uses threat intelligence feeds (such as lists of malicious IP addresses, domains, and file hashes) combined with machine learning models to identify suspicious and potentially malicious activity without requiring you to deploy or manage any additional security software.
 
@@ -21,11 +21,11 @@ When a potential threat is identified, GuardDuty generates a *finding*: a detail
 
 ---
 
-# Example GuardDuty Finding Types
+## Example GuardDuty Finding Types
 
 Finding types follow the format `ThreatPurpose:ResourceType/ThreatFamilyName`. The resource type in the name tells you which AWS service was targeted. Below are representative examples across the main categories.
 
-## EC2
+### EC2
 
 EC2 findings typically relate to network-level threats observed via VPC Flow Logs and DNS logs.
 
@@ -33,7 +33,7 @@ EC2 findings typically relate to network-level threats observed via VPC Flow Log
 - `Trojan:EC2/BlackholeTraffic`: an instance is communicating with an IP address known to be a black-hole used by malware command-and-control infrastructure
 - `UnauthorizedAccess:EC2/TorIPCaller`: an EC2 instance is being accessed from a Tor exit node
 
-## IAM
+### IAM
 
 IAM findings use GuardDuty's anomaly detection model to flag unusual API call patterns across CloudTrail management events.
 
@@ -41,7 +41,7 @@ IAM findings use GuardDuty's anomaly detection model to flag unusual API call pa
 - `CredentialAccess:IAMUser/AnomalousBehavior`: an IAM principal is making API calls in a pattern inconsistent with its historical baseline
 - `Persistence:IAMUser/UserPermissions`: an IAM entity is modifying policies or creating new users in a manner consistent with persistence techniques
 
-## S3
+### S3
 
 S3 findings surface data-access threats against your buckets.
 
@@ -49,7 +49,7 @@ S3 findings surface data-access threats against your buckets.
 - `Exfiltration:S3/MaliciousIPCaller`: S3 API calls are being made from a known malicious IP address
 - `Discovery:S3/MaliciousIPCaller.Custom`: a source IP on your custom threat list is enumerating S3 buckets
 
-## EKS
+### EKS
 
 EKS Protection findings come from Kubernetes audit log analysis.
 
@@ -57,14 +57,14 @@ EKS Protection findings come from Kubernetes audit log analysis.
 - `Execution:Kubernetes/ExecInKubernetes`: a command was executed inside a running container via `kubectl exec`
 - `PrivilegeEscalation:Kubernetes/PrivilegedContainer`: a privileged container was launched, which could allow a breakout to the underlying host
 
-## RDS
+### RDS
 
 RDS Protection findings are generated from login activity to Amazon Aurora clusters.
 
 - `CredentialAccess:RDS/AnomalousBehavior.SuccessfulLogin`: a successful database login from an unusual user or location
 - `CredentialAccess:RDS/MaliciousIPCaller.FailedLogin`: failed login attempts originating from a known malicious IP address
 
-## Attack Sequences (Extended Threat Detection)
+### Attack Sequences (Extended Threat Detection)
 
 GuardDuty's Extended Threat Detection correlates findings across multiple services and time windows to surface multi-stage attacks as a single high-severity finding.
 
@@ -74,11 +74,11 @@ GuardDuty's Extended Threat Detection correlates findings across multiple servic
 
 ---
 
-# What are Suppression Rules?
+## What are Suppression Rules?
 
 A suppression rule is a filter you define in GuardDuty that automatically **archives** any new finding that matches its criteria. Suppressed findings are never deleted. GuardDuty still generates them and stores them for 90 days, but they are immediately moved to the archived state and do not appear in your active findings queue.
 
-## How they work
+### How they work
 
 You define a suppression rule using one or more filter attributes (finding type, severity, resource tags, EC2 instance ID, S3 bucket name, etc.) combined with match operators:
 
@@ -90,37 +90,37 @@ You define a suppression rule using one or more filter attributes (finding type,
 
 Rules can be as broad as suppressing an entire finding type (e.g. all `CryptoCurrency:EC2/*` findings) or as granular as suppressing a specific finding type only when it fires against a resource tagged `Environment: dev`.
 
-## Why use them?
+### Why use them?
 
 In a mature AWS environment, certain findings will reliably represent known-good activity: a penetration testing EC2 instance that legitimately communicates over unusual ports, a NAT gateway that generates high-volume DNS findings, or a deployment pipeline that makes bulk S3 API calls. Without suppression rules, these recurring false positives dilute your signal-to-noise ratio and increase alert fatigue.
 
 Suppressed findings are also **excluded from downstream integrations** and are not forwarded to AWS Security Hub, Amazon EventBridge, Amazon Detective, or Amazon S3 exports. This means your SIEM, ticketing system, or on-call paging tool stays quiet for findings you have already triaged and accepted.
 
-## Important caveat
+### Important caveat
 
 GuardDuty's Extended Threat Detection relies on individual findings as signals when building attack sequences. Broadly suppressing finding types can prevent attack sequence findings from being generated, because the archived signals are excluded from correlation. Suppress at the most specific level you can; prefer resource-scoped rules over type-wide ones.
 
 ---
 
-# GuardDuty IP Sets
+## GuardDuty IP Sets
 
 GuardDuty lets you upload custom lists of IP addresses (and domains) to fine-tune its detection behaviour. These lists come in two flavours: **Trusted IP lists** and **Threat Intel lists** (also called threat lists), described below.
 
 Both are stored as plain-text files in S3 (one entry per line, supporting CIDR notation for IP ranges) and activated per GuardDuty detector. GuardDuty now recommends using **entity lists**, which can contain IP addresses, domain names, or both in the same list, over the legacy IP-only format.
 
-## Trusted IP Lists
+### Trusted IP Lists
 
 A trusted IP list contains IP addresses or CIDR ranges that you consider safe sources of traffic, such as your corporate VPN egress IPs, an office network, or a known third-party security scanner you have authorised. GuardDuty **does not generate findings** for activity originating from entries on a trusted IP list.
 
 Trusted lists are useful when you have infrastructure that legitimately behaves in ways that would otherwise trigger findings, and you want to suppress an entire source rather than write individual suppression rules per finding type.
 
-## Threat Intel Lists
+### Threat Intel Lists
 
 A threat intel list contains IP addresses or domains you have identified as known malicious sources, such as IP ranges from your own incident response investigations or feeds from a commercial threat intelligence provider. When GuardDuty observes activity involving an entry on a threat list, it **generates a finding** even if that IP would not otherwise have triggered one.
 
 Threat lists let you operationalise your own threat intelligence and ensure GuardDuty alerts on adversary infrastructure that AWS's built-in feeds may not yet include.
 
-### Limits
+#### Limits
 
 - Up to **6 trusted IP lists** and **6 threat intel lists** per GuardDuty detector per region
 - Maximum **200,000 entries** per list (IP addresses or CIDRs)
@@ -128,7 +128,7 @@ Threat lists let you operationalise your own threat intelligence and ensure Guar
 
 ---
 
-# The Difference Between Trusted Lists and Suppression Rules
+## The Difference Between Trusted Lists and Suppression Rules
 
 Both trusted lists and suppression rules can silence GuardDuty findings for known-good activity, but they operate at different layers and have meaningfully different behaviours.
 
@@ -142,7 +142,7 @@ Both trusted lists and suppression rules can silence GuardDuty findings for know
 | **Granularity** | IP/domain only | Fine-grained: combine multiple attributes with AND logic |
 | **Best used for** | Trusted infrastructure sources you always want to ignore | Known false positives scoped by resource, tag, region, or finding subtype |
 
-### When to use each
+#### When to use each
 
 Use a **trusted IP list** when the noise originates from a specific, stable set of IP addresses you fully control or trust: your VPN, a penetration testing host, or an authorised scanner. It is the bluntest instrument but requires no maintenance as new finding types emerge.
 
@@ -152,7 +152,7 @@ In practice, most teams use both: trusted lists for known-good source infrastruc
 
 ---
 
-# Example Finding: IAM Credential Use Outside AWS
+## Example Finding: IAM Credential Use Outside AWS
 
 The finding type `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` fires when instance profile credentials (issued via the EC2 metadata service) are used from an IP address that does not belong to AWS infrastructure. This is a high-fidelity indicator of credential theft, since legitimate use of instance credentials should never originate outside of AWS.
 
@@ -228,7 +228,7 @@ Key fields to note:
 
 ---
 
-# Summary
+## Summary
 
 In this post we covered the core building blocks of GuardDuty and how to use them to manage signal quality in a real AWS environment.
 
@@ -246,7 +246,7 @@ Finally, we walked through a realistic example finding for `UnauthorizedAccess:I
 
 ---
 
-# Further Reading
+## Further Reading
 
 - [What is Amazon GuardDuty?](https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html)
 - [GuardDuty EC2 finding types](https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-types-ec2.html)

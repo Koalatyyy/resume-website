@@ -8,8 +8,9 @@ layout: base.njk
   "headline": "{{ title }}",
   "description": "{{ excerpt or description }}",
   "datePublished": "{{ date | htmlDateString }}",
-  "dateModified": "{{ date | htmlDateString }}",
-  "url": "https://www.haggath.re{{ page.url }}",
+  "dateModified": "{{ (updated or date) | htmlDateString }}",
+  "image": "https://www.haggath.re/assets/og-card.jpg",
+  "url": "https://www.haggath.re/blog{{ page.url }}",
   "author": {
     "@type": "Person",
     "name": "Thomas Haggath",
