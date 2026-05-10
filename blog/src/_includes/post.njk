@@ -4,6 +4,17 @@ layout: base.njk
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.haggath.re/" },
+    { "@type": "ListItem", "position": 2, "name": "Writing", "item": "https://www.haggath.re/blog/" },
+    { "@type": "ListItem", "position": 3, "name": "{{ title }}", "item": "https://www.haggath.re/blog{{ page.url }}" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "Article",
   "headline": "{{ title }}",
   "description": "{{ excerpt or description }}",
@@ -17,7 +28,7 @@ layout: base.njk
     "url": "https://www.haggath.re"
   },
   "publisher": {
-    "@type": "Person",
+    "@type": "Organization",
     "name": "Thomas Haggath",
     "url": "https://www.haggath.re"
   }
