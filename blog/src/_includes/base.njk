@@ -27,6 +27,21 @@
 
   <link rel="preload" href="/blog/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/blog/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css">
+  <style>
+    pre[class*="language-"] {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    code[class*="language-"] {
+      font-size: 0.875rem;
+    }
+  </style>
   <style>
     .blog-prose {
       max-width: 680px;
