@@ -40,6 +40,31 @@ layout: base.njk
     All posts
   </a>
   <h1>{{ title }}</h1>
-  <p class="post-meta">{{ date | readableDate }} &middot; {{ content | readingTime }} min read</p>
+  <p class="post-meta"><time datetime="{{ date | htmlDateString }}">{{ date | readableDate }}</time> &middot; {{ content | readingTime }} min read</p>
   {{ content | safe }}
+  {% set postList = collections.posts %}
+  {% set currentIndex = 0 %}
+  {% for p in postList %}
+    {% if p.url == page.url %}{% set currentIndex = loop.index0 %}{% endif %}
+  {% endfor %}
+  {% set prevPost = postList[currentIndex + 1] %}
+  {% set nextPost = postList[currentIndex - 1] if currentIndex > 0 else null %}
+  {% if prevPost or nextPost %}
+  <nav class="post-nav" aria-label="Post navigation">
+    <div class="post-nav-inner">
+      {% if prevPost %}
+      <a href="/blog{{ prevPost.url }}" class="post-nav-link post-nav-prev">
+        <span class="post-nav-dir">← Older</span>
+        <span class="post-nav-title">{{ prevPost.data.title }}</span>
+      </a>
+      {% else %}<div></div>{% endif %}
+      {% if nextPost %}
+      <a href="/blog{{ nextPost.url }}" class="post-nav-link post-nav-next">
+        <span class="post-nav-dir">Newer →</span>
+        <span class="post-nav-title">{{ nextPost.data.title }}</span>
+      </a>
+      {% else %}<div></div>{% endif %}
+    </div>
+  </nav>
+  {% endif %}
 </div>
