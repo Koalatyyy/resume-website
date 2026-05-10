@@ -44,6 +44,9 @@ jobs:
           sed -i "s/\"dateModified\": \"[0-9-]*\"/\"dateModified\": \"$TODAY\"/" index.html
           sed -i "s|<lastmod>[0-9-]*</lastmod>|<lastmod>$TODAY</lastmod>|" sitemap.xml
 
+      - name: Sync writing posts to index.html
+        run: node scripts/sync-writing.js
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
