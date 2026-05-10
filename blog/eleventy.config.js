@@ -2,6 +2,13 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("readableDate", (date) =>
     new Date(date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
   );
+  eleventyConfig.addFilter("htmlDateString", (date) =>
+    new Date(date).toISOString().split("T")[0]
+  );
+  eleventyConfig.addFilter("readingTime", (content) => {
+    const words = content.replace(/<[^>]+>/g, "").split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200));
+  });
   // Pass through shared assets from root
   eleventyConfig.addPassthroughCopy({ "../style.css": "style.css" });
   eleventyConfig.addPassthroughCopy({ "../fonts": "fonts" });
