@@ -57,7 +57,7 @@ The key fields:
 | `Types` | Array of `Namespace/Category/Classifier` strings classifying the finding |
 | `CreatedAt` / `UpdatedAt` | ISO 8601 timestamps; `UpdatedAt` reflects when the originating service last updated the finding |
 | `Severity.Label` | Normalised severity label: `INFORMATIONAL`, `LOW`, `MEDIUM`, `HIGH`, or `CRITICAL` |
-| `Severity.Normalized` | Integer 0–100; the score Security Hub uses internally to derive `Severity.Label` |
+| `Severity.Normalized` | Integer 0–100; the score Security Hub uses to derive `Severity.Label`, also returned directly in the `GetFindings` API response |
 | `FindingProviderFields.Severity` | The original severity from the source product, preserved alongside the normalised ASFF score |
 | `Resources` | Array of affected AWS resources, each with `Type`, `Id`, `ARN`, `Region`, and optional `Details` |
 | `Compliance` | Present on Security Hub control findings (contains `Status`: `PASSED`, `FAILED`, `WARNING`, `NOT_AVAILABLE`); absent on threat findings from GuardDuty and Macie |
@@ -97,7 +97,7 @@ Each integrated service maps its own native severity scale to this 0–100 range
 | Inspector | HIGH | 70–89 | `HIGH` |
 | Inspector | CRITICAL | 90–100 | `CRITICAL` |
 
-The normalised score provides a common severity axis across services — but it does not provide context. A GuardDuty `HIGH` finding for `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` (Normalized: 80) and a Macie `HIGH` finding for `Policy:IAMUser/S3BlockPublicAccessDisabled` (Normalized: 70) both appear as `HIGH` in Security Hub. The first represents active credential theft; the second is a bucket misconfiguration. The label is the same; the risk profile is not.
+The normalised score provides a common severity axis across services — but it does not provide context. A GuardDuty `HIGH` finding for `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` (Normalized: 80) and a Macie `HIGH` finding for `SensitiveData:S3Object/Credentials` (Normalized: 70) both appear as `HIGH` in Security Hub. The first represents active credential theft in progress; the second means Macie detected AWS credentials embedded in an S3 object. The label is the same; the risk profile is not.
 
 This is why `ProductArn` and `Types` matter when building filters, suppression rules, or automation. Filtering on `Severity.Label = HIGH` alone will surface both. Filtering on `ProductArn = product/aws/guardduty` AND `Severity.Label = HIGH` narrows to active threat findings from GuardDuty only.
 
@@ -159,19 +159,17 @@ The following is a GuardDuty `UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B` 
       "Unusual Behaviors/User/ConsoleLogin"
     ]
   },
-  "Title": "API GenerateDataKey was invoked from an unusual location.",
-  "Description": "APIs commonly used to obtain data keys, which can be used to access encrypted data, were invoked from an unusual location. The API call was made from the country Spain, which differs from the expected country United Kingdom for IAM user john.doe.",
+  "Title": "Successful console login from anomalous location.",
+  "Description": "AWS Management Console login was observed from an anomalous location. The principal john.doe successfully authenticated from Spain, which is inconsistent with the geographic baseline established for this user.",
   "Resources": [
     {
-      "Type": "AwsIamAccessKey",
+      "Type": "AwsIamUser",
       "Id": "arn:aws:iam::123456789012:user/john.doe",
       "Partition": "aws",
       "Region": "eu-west-1",
       "Details": {
-        "AwsIamAccessKey": {
-          "PrincipalId": "AIDABC123DEF456GHI789",
-          "PrincipalType": "IAMUser",
-          "PrincipalName": "john.doe"
+        "AwsIamUser": {
+          "UserName": "john.doe"
         }
       }
     }
@@ -180,8 +178,7 @@ The following is a GuardDuty `UnauthorizedAccess:IAMUser/ConsoleLoginSuccess.B` 
   "Workflow": {
     "Status": "NEW"
   },
-  "RecordState": "ACTIVE",
-  "Compliance": null
+  "RecordState": "ACTIVE"
 }
 ```
 
@@ -191,7 +188,7 @@ Key fields to note:
 - **`GeneratorId`**: the GuardDuty detector ARN. In multi-account environments with multiple detectors, this identifies which detector fired — useful when a specific detector is known to generate noise for a particular finding type.
 - **`Types`**: dual classification — `TTPs/Initial Access/Valid Accounts` maps to MITRE ATT&CK; `Unusual Behaviors/User/ConsoleLogin` reflects GuardDuty's anomaly detection model. Both are searchable filter attributes in Security Hub.
 - **`Severity.Normalized`**: 50, which places this in the `MEDIUM` band (40–69). GuardDuty's native severity of 5.0 maps directly to 50. `FindingProviderFields.Severity.Original` preserves the native `"5.0"` alongside the normalised value.
-- **`Compliance`**: `null` — absent on threat findings. Present only on Security Hub control findings, where it carries `Status: PASSED | FAILED | WARNING | NOT_AVAILABLE`.
+- **`Compliance`**: absent on threat findings — the field is omitted entirely from the ASFF document, not set to null. Present only on Security Hub control findings, where it carries `Status: PASSED | FAILED | WARNING | NOT_AVAILABLE`.
 - **`Workflow.Status`**: `NEW` — the finding has not been triaged. Changes to `RESOLVED` or `SUPPRESSED` via Security Hub automation rules or manual update. Unlike `RecordState`, this field is owned by your team, not the originating service.
 - **`RecordState`**: `ACTIVE` — the finding is current. GuardDuty sets this to `ARCHIVED` when it stops observing the behaviour, independent of your triage state.
 
