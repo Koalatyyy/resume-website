@@ -104,6 +104,15 @@
     .post-nav-dir { font-size: 0.8125rem; color: var(--text-muted); }
     .post-nav-title { font-size: 0.9375rem; font-weight: 600; color: var(--text); line-height: 1.35; }
     .post-nav-next { text-align: right; margin-left: auto; }
+    @media (max-width: 640px) {
+      .blog-prose { padding-block: calc(var(--nav-height) + 2rem) 3rem; }
+      .blog-prose h2 { font-size: 1.25rem; }
+      .blog-prose h3 { font-size: 1.0625rem; }
+      .blog-prose table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .post-nav-inner { flex-direction: column; gap: 1.25rem; }
+      .post-nav-link { max-width: 100%; }
+      .post-nav-next { text-align: left; margin-left: 0; }
+    }
   </style>
 </head>
 <body>
