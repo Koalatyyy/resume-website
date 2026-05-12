@@ -127,15 +127,15 @@ Both allow lists and suppression rules reduce noise in Macie, but they work at d
 | | Allow Lists | Suppression Rules |
 |---|---|---|
 | **When it acts** | At inspection time, before a finding is created | After finding generation, immediately archives it |
-| **Finding created?** | No — the occurrence is excluded from results entirely | Yes — created and then archived, stored for 90 days |
+| **Finding created?** | No - the occurrence is excluded from results entirely | Yes - created and then archived, stored for 90 days |
 | **Scope** | Specific text or patterns within object content | Any finding attribute (type, severity, bucket, account, job, etc.) |
 | **Applies to** | Sensitive data findings only | Both policy findings and sensitive data findings |
-| **Forwarded downstream?** | N/A — no finding exists to forward | Suppressed findings are not sent to Security Hub or EventBridge |
+| **Forwarded downstream?** | N/A - no finding exists to forward | Suppressed findings are not sent to Security Hub or EventBridge |
 | **Best used for** | Known-safe data patterns you never want reported | Known false positives scoped by resource, finding type, or job |
 
 #### When to use each
 
-Use an **allow list** when you have specific text or patterns that are genuinely not sensitive in your environment — test data, internal formats, or public contact details that happen to match a Macie managed identifier. Allow lists prevent Macie from ever flagging that content, which keeps your sensitive data statistics clean and avoids generating findings you will only suppress anyway.
+Use an **allow list** when you have specific text or patterns that are genuinely not sensitive in your environment - test data, internal formats, or public contact details that happen to match a Macie managed identifier. Allow lists prevent Macie from ever flagging that content, which keeps your sensitive data statistics clean and avoids generating findings you will only suppress anyway.
 
 Use a **suppression rule** when the finding itself is valid but irrelevant to your operations in a specific context: a known-good bucket that stores credentials as part of its design, a replication rule that intentionally sends data to an external account you own, or a policy finding type that your security posture accepts for a defined set of resources.
 
@@ -145,7 +145,7 @@ In practice, allow lists handle content-level exemptions and suppression rules h
 
 ## Example Finding: Sensitive Credentials Detected in S3
 
-The finding type `SensitiveData:S3Object/Credentials` fires when Macie detects content matching credentials patterns — such as AWS secret access keys, private keys, or authentication tokens — inside an S3 object. This is one of Macie's highest-priority finding types since exposed credentials in S3 are a common and high-impact misconfiguration.
+The finding type `SensitiveData:S3Object/Credentials` fires when Macie detects content matching credentials patterns (such as AWS secret access keys, private keys, or authentication tokens) inside an S3 object. This is one of Macie's highest-priority finding types since exposed credentials in S3 are a common and high-impact misconfiguration.
 
 ```json
 {
@@ -218,7 +218,7 @@ Key fields to note:
 
 - **`type`**: the finding identifier, your primary filter attribute when writing suppression rules
 - **`severity.score`**: Macie uses a numeric score (0-100) mapped to Low, Medium, or High; 90 indicates a high-confidence, high-impact detection
-- **`resourcesAffected.s3Object.key`**: the exact object path where the sensitive data was found — critical for triage
+- **`resourcesAffected.s3Object.key`**: the exact object path where the sensitive data was found, critical for triage
 - **`classificationDetails.result.sensitiveData`**: the breakdown of what was detected, including category, specific type (`AWS_CREDENTIALS`), and occurrence count
 - **`classificationDetails.result.sensitiveData.detections.occurrences.lineRanges`**: the line numbers within the object where matches were found, giving you a precise location to investigate
 - **`resourcesAffected.s3Bucket.publicAccess.effectivePermission`**: shows `NOT_PUBLIC` here, which reduces severity somewhat; the same finding in a public bucket would score higher
