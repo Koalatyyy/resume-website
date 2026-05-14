@@ -1741,3 +1741,7 @@ code[class*="language-"] { font-size: 0.875rem; }
   .post-nav-link { max-width: 100%; }
   .post-nav-next { text-align: left; margin-left: 0; }
 }
+
+.github-graph { margin-top: 2.5rem; }
+.github-graph-label { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+.github-graph-img { width: 100%; max-width: 720px; background: #0d1117; border-radius: 8px; padding: 1rem; box-sizing: border-box; display: block; }
