@@ -6,61 +6,55 @@ eleventyExcludeFromCollections: true
 noindex: true
 ---
 
-AWS security services are good at detection. GuardDuty identifies threats. Macie surfaces sensitive data exposure. Security Hub aggregates findings across both. What none of them do by default is act on what they find.
+GuardDuty identifies threats. Macie surfaces sensitive data exposure. Security Hub aggregates findings across both. None of them act on what they find by default — that part is on you.
 
-That gap is where Amazon EventBridge fits. It is a serverless event router that captures events from AWS services and delivers them to targets you define: Lambda functions, Step Functions workflows, Systems Manager Automation runbooks, SNS topics, and more. EventBridge is the connective tissue between detection and response.
+Amazon EventBridge is where detection meets response. It captures events emitted by AWS services and routes them to targets you define: Lambda functions, Step Functions workflows, Systems Manager Automation runbooks, SNS topics. It is the layer between a finding being generated and something actually happening because of it.
 
 ---
 
 ## What is Amazon EventBridge?
 
-Amazon EventBridge is a serverless event bus service. It receives events from AWS services, your own applications, and third-party software, then routes them to one or more targets based on rules you define.
+EventBridge is a serverless event bus. AWS services publish structured JSON events to it when things happen: a GuardDuty finding is generated, an EC2 instance changes state, an IAM policy is modified. EventBridge receives those events on the default event bus and evaluates them against rules you define. Matching events get delivered to your targets.
 
-Events in EventBridge are JSON documents. Every AWS service that integrates with EventBridge emits a structured event when something happens: a GuardDuty finding is generated, a Macie finding is archived, an EC2 instance changes state, an IAM policy is modified. EventBridge receives these events on the default event bus and evaluates them against your rules.
+There are three ways to work with events in EventBridge:
 
-There are three ways to process and deliver events in EventBridge:
+- **Event buses**: receive events from many sources and route them to many targets. Every AWS account has a default event bus that AWS services publish to automatically. You can create custom buses for cross-account routing or your own application events.
+- **Pipes**: point-to-point, single source to single target. Useful when you need filtering, enrichment, or transformation in between. Less relevant for security automation at scale.
+- **Scheduler**: time-based invocation using cron or rate expressions. Separate from event-driven rules.
 
-- **Event buses**: routers that receive events from many sources and deliver them to many targets. The default event bus in every AWS account automatically receives events from AWS services. You can also create custom event buses for events from your own applications or cross-account event routing.
-- **Pipes**: point-to-point integrations for when you have a single source and a single target. Pipes support filtering, enrichment, and transformation of events before delivery.
-- **Scheduler**: a standalone scheduler for invoking targets on a cron or rate expression, or as a one-time invocation. Separate from event-driven rules.
-
-For security automation, event buses and rules are the primary mechanism.
+For security automation, you'll mostly be working with event buses and rules.
 
 ---
 
 ## Event-Driven Automation in AWS
 
-Traditional security operations are largely reactive: a finding appears in a console, an analyst reviews it, a ticket is created, a remediation step is performed manually. In environments with hundreds of accounts and thousands of resources, that pipeline does not scale.
+The traditional security operations loop — finding appears, analyst reviews it, ticket gets raised, someone performs a manual action — doesn't hold up in environments with hundreds of accounts and thousands of resources. The volume is too high and the latency is too long.
 
-Event-driven automation replaces manual steps with automated responses triggered directly by the events that security services emit. When GuardDuty generates a HIGH severity finding, EventBridge can invoke a Lambda function within seconds to snapshot the affected instance, revoke the compromised credential, or notify the on-call team. No analyst needs to see the finding first.
+Event-driven automation collapses that loop. When GuardDuty generates a HIGH severity finding, EventBridge can invoke a response in seconds, before an analyst has even opened the console. The security service emits an event, a rule matches it, a target runs. Each step is independent. The detecting service doesn't know or care what happens downstream.
 
-The model is straightforward:
+One rule can have up to five targets. A single event simultaneously notifies an SNS topic, opens a ticket via Lambda, and starts a Step Functions workflow. Each target gets the same event; none of them know about the others.
+
+The basic flow:
 
 1. A security service detects something and emits an event
-2. EventBridge receives the event on the default event bus
-3. A rule evaluates the event against an event pattern
+2. EventBridge receives it on the default event bus
+3. A rule evaluates the event against a pattern
 4. If it matches, EventBridge invokes one or more targets
-5. The target performs the automated response
+5. The target does something
 
-Each step is decoupled. The security service does not know or care what happens after it emits the event. The target does not need to poll for findings. EventBridge handles the routing.
+### Automation does not have to mean remediation
 
-This decoupling also means the same event can trigger multiple independent responses simultaneously. A single GuardDuty finding can, via a single EventBridge rule with multiple targets, notify a Slack channel via SNS, open a Jira ticket via a Lambda function, and kick off a Step Functions workflow to isolate the affected resource, all in parallel.
+Event-driven automation doesn't have to touch anything. It doesn't have to isolate an instance or revoke a credential. Those are valid responses, but they're not always the right first move, and in some environments they're politically difficult to get approved.
 
-## Automation does not have to mean remediation
+A finding is what the detecting service observed, not the full picture. Before taking an action that affects a running workload, it's worth thinking about what you don't know yet.
 
-Event-driven automation is often framed around mutative actions: isolating an instance, revoking a credential, modifying a security group. Those are valid responses, but they are not the only ones, and they are not always the right first step.
+EventBridge targets can be used purely to gather that context and feed it back into your workflow:
 
-A finding is a signal. It contains what the detecting service observed, but rarely everything you need to make a confident decision. Before taking an action that affects a running workload, it is worth asking what additional context would make that decision clearer.
+- A GuardDuty finding identifies an EC2 instance by ID. A Lambda function queries the EC2 API, pulls the instance tags, attached IAM role, VPC, and public IP status, then writes all of it back to the Security Hub finding via `BatchUpdateFindings`. The analyst sees a fully enriched finding instead of a raw alert.
+- A Macie finding identifies an S3 object containing credentials. Before anything is suppressed or escalated, a Lambda function checks whether the bucket is public, who last modified the object, and whether replication is configured to an external account.
+- An IAM Access Analyzer finding flags external access. A Lambda function checks whether the principal being granted access belongs to a known partner account in Parameter Store. If it matches, it's low priority. If it doesn't, it escalates.
 
-EventBridge targets can be used purely for enrichment: gathering information that the original finding does not include and feeding it back into your triage workflow. Examples:
-
-- A GuardDuty finding identifies an EC2 instance by ID. A Lambda function can query the EC2 API to retrieve its tags, the IAM role attached, the VPC it sits in, and whether it has a public IP, then attach all of that to the Security Hub finding via `BatchUpdateFindings`
-- A Macie finding identifies an S3 object containing credentials. A Lambda function can check whether the bucket has public access enabled, who last modified the object, and whether the bucket has replication configured to an external account, before any suppression or escalation decision is made
-- An IAM Access Analyzer finding flags external access to a resource. A Lambda function can look up the principal being granted access and determine whether it belongs to a known partner account listed in a parameter or config store, informing whether the finding warrants escalation or suppression
-
-In each case the automation runs immediately on finding generation, the enriched data is available to the analyst before they open the finding, and no production resource has been touched. This is a lower-risk entry point for teams building their first automated workflows, and a useful pattern even for teams with mature remediation pipelines.
-
-The step-by-step example later in this post shows this pattern in practice: enrichment and notification first, containment as a downstream step.
+In each case the automation runs immediately, nothing in production is touched, and the analyst gets a finding with actual context instead of a raw alert. It's a reasonable place to start if your team isn't ready to auto-remediate yet, and it stays useful after you are — better context means better triage regardless of what happens next.
 
 ---
 
@@ -68,9 +62,9 @@ The step-by-step example later in this post shows this pattern in practice: enri
 
 ### Event Patterns
 
-A rule matches events using an event pattern: a JSON filter that specifies which fields must be present and what values they must hold. EventBridge evaluates every incoming event against every active rule. If the event matches the pattern, the rule fires.
+Rules match events using event patterns: JSON filters that specify which fields must be present and what values they must hold. EventBridge evaluates every incoming event against every active rule. If the event matches, the rule fires.
 
-Event patterns use a subset of the event's JSON structure. You only need to include the fields you want to match on; fields you omit are ignored.
+You only need to include the fields you want to match on. Fields you omit are ignored.
 
 A rule that captures all GuardDuty findings:
 
@@ -81,7 +75,7 @@ A rule that captures all GuardDuty findings:
 }
 ```
 
-A rule that captures only HIGH and CRITICAL GuardDuty findings, scoped to a specific finding type:
+A rule scoped to a specific finding type at HIGH severity and above:
 
 ```json
 {
@@ -94,7 +88,7 @@ A rule that captures only HIGH and CRITICAL GuardDuty findings, scoped to a spec
 }
 ```
 
-A rule that captures Security Hub findings with a FAILED compliance status:
+A rule that captures Security Hub findings with a FAILED compliance status that haven't been triaged yet:
 
 ```json
 {
@@ -115,8 +109,6 @@ A rule that captures Security Hub findings with a FAILED compliance status:
 
 ### Event Sources
 
-The AWS services most relevant to security automation and their EventBridge event types:
-
 | Service | Event type | When it fires |
 |---|---|---|
 | GuardDuty | `GuardDuty Finding` | A new finding is generated or an existing finding is updated |
@@ -128,32 +120,33 @@ The AWS services most relevant to security automation and their EventBridge even
 
 ### Targets
 
-Once a rule matches, EventBridge delivers the event to one or more targets. Common targets for security automation:
+| Target | What it's good for |
+|---|---|
+| Lambda | Arbitrary code: enrich findings, call external APIs, modify resources, make decisions |
+| Step Functions | Multi-step workflows with branching, retries, and optional human approval |
+| Systems Manager Automation | Runbook-based remediation for AWS resource configurations, good for Config compliance findings |
+| SNS | Fan-out to email, SMS, HTTP endpoints, on-call paging tools |
+| SQS | Queue events for downstream processing at controlled throughput, useful during finding bursts |
 
-- **Lambda**: arbitrary code. Revoke credentials, modify security group rules, call third-party APIs, enrich findings with additional context before forwarding
-- **Step Functions**: multi-step workflows with branching logic, retries, and human approval steps. Suited for remediations that require sequenced actions or sign-off
-- **Systems Manager Automation**: pre-built and custom runbooks for remediating AWS resource configurations. Useful for Config compliance findings where the remediation is a well-defined AWS API call
-- **SNS**: fan-out to email, SMS, or HTTP endpoints. Useful for notifications to on-call paging tools or Slack webhooks
-- **SQS**: queue events for downstream processing at controlled throughput. Useful when the consumer cannot handle burst volume from a large finding wave
-
-A single rule can have up to five targets. All targets receive the same event and are invoked in parallel.
+Each rule supports up to five targets, all invoked in parallel with the same event.
 
 ---
 
 ## Example: Automated Response to Credential Exfiltration
 
-The GuardDuty finding type `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` indicates that EC2 instance credentials are being used from outside AWS infrastructure. This is high-fidelity: instance credentials should never originate outside AWS, so the false positive rate is low.
+`UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` fires when EC2 instance credentials are used from outside AWS infrastructure. Instance credentials should never originate outside AWS, so the false positive rate on this one is low.
 
-An automated response for this finding:
+A response workflow for this finding:
 
 1. EventBridge rule matches on `source: aws.guardduty` and `detail.type: UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS`
-2. Rule invokes a Step Functions workflow
-3. Workflow step 1: Lambda extracts the affected role ARN from `detail.resource.accessKeyDetails.principalId`
-4. Workflow step 2: Lambda calls `iam:PutRolePolicy` to attach an explicit deny-all inline policy to the role, blocking further use of any active sessions
-5. Workflow step 3: SNS notifies the security team with the finding detail and the role that was locked
-6. Workflow step 4: Lambda updates the finding's `Workflow.Status` in Security Hub to `NOTIFIED` via `BatchUpdateFindings`
+2. Rule triggers a Step Functions workflow
+3. Step 1: Lambda extracts the affected role ARN from `detail.resource.accessKeyDetails.principalId` and queries the EC2 API for instance tags, environment, and owner
+4. Step 2: Lambda writes the enriched context back to the Security Hub finding via `BatchUpdateFindings`
+5. Step 3: SNS notifies the security team with the finding detail, enriched context, and a link to the finding in Security Hub
+6. Step 4: Lambda attaches an explicit deny-all inline policy to the role via `iam:PutRolePolicy`, blocking further use of any active sessions
+7. Step 5: Lambda updates `Workflow.Status` to `NOTIFIED` in Security Hub
 
-The entire sequence completes in under 30 seconds from finding generation. No analyst interaction required for the initial containment.
+Enrichment and notification happen first. Containment is a downstream step, after context has been gathered. The whole sequence runs in under 30 seconds from finding generation.
 
 ---
 
