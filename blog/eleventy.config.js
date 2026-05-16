@@ -51,6 +51,6 @@ module.exports = function (eleventyConfig) {
       output: "_site",
       includes: "_includes",
     },
-    pathPrefix: "/",
+    pathPrefix: "/blog/",
   };
 };

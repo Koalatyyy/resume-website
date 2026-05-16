@@ -45,7 +45,7 @@ OVH shared hosting (FTP). Cloudflare full-proxy in front — cache purged on eve
 | IndexNow | Search engine ping on deploy |
 
 ## Blog (`/blog/`)
-Eleventy site in `blog/`. `npm run dev` runs from inside the `blog/` directory, so the dev server serves `_site` at `http://localhost:8080/`. CI deploys `_site` to `/www/blog/` on OVH, served at `https://www.haggath.re/blog/`. Both environments share the same root — hardcoded `/blog/` paths in templates are correct for both. Do not use Eleventy's `| url` filter or `pathPrefix` to try to fix local asset paths — it will triple-prefix them in production.
+Eleventy site in `blog/`. `pathPrefix: "/blog/"` is set in `eleventy.config.js` — do not change this. The dev server runs at `http://localhost:8080/blog/`. CI deploys `_site` to `/www/blog/` on OVH, served at `https://www.haggath.re/blog/`. Asset and page hrefs in templates are hardcoded with `/blog/` prefix (e.g. `/blog/style.css`, `/blog{{ post.url }}`). Do NOT use the Eleventy `| url` filter on these — `pathPrefix` is already `/blog/` so `| url` would double the prefix. Do NOT change `pathPrefix` to `/`.
 
 ## Web search / research
 Be concise — don't narrate search results, just apply what's needed.
