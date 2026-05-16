@@ -1,7 +1,9 @@
 const syntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const { feedPlugin } = require("@11ty/eleventy-plugin-rss");
+const { HtmlBasePlugin } = require("@11ty/eleventy");
 
 module.exports = function (eleventyConfig) {
+  eleventyConfig.addPlugin(HtmlBasePlugin);
   eleventyConfig.addPlugin(syntaxHighlight);
   eleventyConfig.addPlugin(feedPlugin, {
     type: "atom",

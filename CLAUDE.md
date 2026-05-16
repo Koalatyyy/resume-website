@@ -45,7 +45,12 @@ OVH shared hosting (FTP). Cloudflare full-proxy in front — cache purged on eve
 | IndexNow | Search engine ping on deploy |
 
 ## Blog (`/blog/`)
-Eleventy site in `blog/`. `pathPrefix: "/blog/"` is set in `eleventy.config.js` — do not change this. The dev server runs at `http://localhost:8080/blog/`. CI deploys `_site` to `/www/blog/` on OVH, served at `https://www.haggath.re/blog/`. Asset and page hrefs in templates are hardcoded with `/blog/` prefix (e.g. `/blog/style.css`, `/blog{{ post.url }}`). Do NOT use the Eleventy `| url` filter on these — `pathPrefix` is already `/blog/` so `| url` would double the prefix. Do NOT change `pathPrefix` to `/`.
+Eleventy site in `blog/`. `pathPrefix: "/blog/"` is set in `eleventy.config.js` — do not change this. The dev server runs at `http://localhost:8080/blog/`. CI deploys `_site` to `/www/blog/` on OVH, served at `https://www.haggath.re/blog/`.
+
+The **HtmlBasePlugin** (built into Eleventy v3, registered in `eleventy.config.js`) rewrites all absolute URLs in rendered HTML using `pathPrefix`. Because of this:
+- Static asset hrefs in templates must have NO `/blog/` prefix — write `/style.css`, `/feed.xml` etc. The plugin adds `/blog/` at build time.
+- `post.url` from Eleventy collections already includes the pathPrefix (e.g. `/blog/guardduty-suppression-rules/`) — use `{{ post.url }}` directly, no `/blog/` prepended.
+- Do NOT also use the `| url` filter — that would double the prefix on top of what HtmlBasePlugin adds.
 
 ## Web search / research
 Be concise — don't narrate search results, just apply what's needed.

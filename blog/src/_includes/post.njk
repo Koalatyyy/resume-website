@@ -56,13 +56,13 @@ layout: base.njk
   <nav class="post-nav" aria-label="Post navigation">
     <div class="post-nav-inner">
       {% if prevPost %}
-      <a href="/blog{{ prevPost.url }}" class="post-nav-link post-nav-prev">
+      <a href="{{ prevPost.url }}" class="post-nav-link post-nav-prev">
         <span class="post-nav-dir">← Older</span>
         <span class="post-nav-title">{{ prevPost.data.title }}</span>
       </a>
       {% else %}<div></div>{% endif %}
       {% if nextPost %}
-      <a href="/blog{{ nextPost.url }}" class="post-nav-link post-nav-next">
+      <a href="{{ nextPost.url }}" class="post-nav-link post-nav-next">
         <span class="post-nav-dir">Newer →</span>
         <span class="post-nav-title">{{ nextPost.data.title }}</span>
       </a>
