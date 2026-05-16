@@ -44,6 +44,9 @@ OVH shared hosting (FTP). Cloudflare full-proxy in front — cache purged on eve
 | Cloudflare | CDN, proxy, auto-injects Insights script server-side |
 | IndexNow | Search engine ping on deploy |
 
+## Blog (`/blog/`)
+Eleventy site in `blog/`. `npm run dev` runs from inside the `blog/` directory, so the dev server serves `_site` at `http://localhost:8080/`. CI deploys `_site` to `/www/blog/` on OVH, served at `https://www.haggath.re/blog/`. Both environments share the same root — hardcoded `/blog/` paths in templates are correct for both. Do not use Eleventy's `| url` filter or `pathPrefix` to try to fix local asset paths — it will triple-prefix them in production.
+
 ## Web search / research
 Be concise — don't narrate search results, just apply what's needed.
 
