@@ -28,6 +28,8 @@ module.exports = function (eleventyConfig) {
   // Pass through shared assets from root
   eleventyConfig.addPassthroughCopy({ "../style.css": "style.css" });
   eleventyConfig.addPassthroughCopy({ "../fonts": "fonts" });
+  eleventyConfig.addPassthroughCopy({ "../favicon.svg": "favicon.svg" });
+  eleventyConfig.addPassthroughCopy({ "../apple-touch-icon.png": "apple-touch-icon.png" });
   eleventyConfig.addPassthroughCopy({ "src/htaccess": ".htaccess" });
 
   eleventyConfig.addCollection("posts", function (collectionApi) {
@@ -49,6 +51,6 @@ module.exports = function (eleventyConfig) {
       output: "_site",
       includes: "_includes",
     },
-    pathPrefix: "/",
+    pathPrefix: process.env.ELEVENTY_ENV === "production" ? "/blog/" : "/",
   };
 };
