@@ -31,7 +31,7 @@ ogType: website
   <ul class="post-list">
     {% for post in collections.posts %}
     <li>
-      <a href="{{ post.url | url }}" class="post-title">{{ post.data.title }}</a>
+      <a href="/blog{{ post.url }}" class="post-title">{{ post.data.title }}</a>
       <time class="post-date" datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time>
       {% if post.data.excerpt %}<p class="post-excerpt">{{ post.data.excerpt }}</p>{% endif %}
     </li>

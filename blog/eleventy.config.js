@@ -51,6 +51,6 @@ module.exports = function (eleventyConfig) {
       output: "_site",
       includes: "_includes",
     },
-    pathPrefix: process.env.ELEVENTY_ENV === "production" ? "/blog/" : "/",
+    pathPrefix: "/",
   };
 };

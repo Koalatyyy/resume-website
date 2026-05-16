@@ -38,7 +38,7 @@ layout: base.njk
 }
 </script>
 <div class="blog-prose">
-  <a href="{{ '/' | url }}" class="back-link">
+  <a href="/blog/" class="back-link">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
     All posts
   </a>
@@ -56,13 +56,13 @@ layout: base.njk
   <nav class="post-nav" aria-label="Post navigation">
     <div class="post-nav-inner">
       {% if prevPost %}
-      <a href="{{ prevPost.url | url }}" class="post-nav-link post-nav-prev">
+      <a href="/blog{{ prevPost.url }}" class="post-nav-link post-nav-prev">
         <span class="post-nav-dir">← Older</span>
         <span class="post-nav-title">{{ prevPost.data.title }}</span>
       </a>
       {% else %}<div></div>{% endif %}
       {% if nextPost %}
-      <a href="{{ nextPost.url | url }}" class="post-nav-link post-nav-next">
+      <a href="/blog{{ nextPost.url }}" class="post-nav-link post-nav-next">
         <span class="post-nav-dir">Newer →</span>
         <span class="post-nav-title">{{ nextPost.data.title }}</span>
       </a>
