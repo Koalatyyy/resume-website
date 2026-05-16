@@ -146,7 +146,7 @@ Both trusted lists and suppression rules can silence GuardDuty findings for know
 
 Use a **trusted IP list** when the noise originates from a specific, stable set of IP addresses you fully control or trust: your VPN, a penetration testing host, or an authorised scanner. It is the bluntest instrument but requires no maintenance as new finding types emerge.
 
-Use a **suppression rule** when you need more precision — for example, suppressing `CryptoCurrency:EC2/BitcoinTool.B` only for instances tagged `Purpose: mining-research`, while keeping the finding active for all other EC2 instances. Suppression rules also give you the audit trail of archived findings, which trusted lists do not.
+Use a **suppression rule** when you need more precision: for example, suppressing `CryptoCurrency:EC2/BitcoinTool.B` only for instances tagged `Purpose: mining-research`, while keeping the finding active for all other EC2 instances. Suppression rules also give you the audit trail of archived findings, which trusted lists do not.
 
 In practice, most teams use both: trusted lists for known-good source infrastructure, and suppression rules for finding-type-specific or resource-scoped noise reduction.
 
@@ -225,24 +225,6 @@ Key fields to note:
 - **`service.action.awsApiCallAction.remoteIpDetails`**: the external IP and enriched geo/ASN data GuardDuty adds automatically
 - **`service.evidence.threatIntelligenceDetails`**: shows the credential was used from a known Tor exit node, corroborating the alert
 - **`resource.accessKeyDetails.principalId`**: the `AROA...` prefix confirms this is an assumed-role session tied to an EC2 instance, not a long-term IAM user key
-
----
-
-## Summary
-
-In this post we covered the core building blocks of GuardDuty and how to use them to manage signal quality in a real AWS environment.
-
-We started with an overview of what GuardDuty is: a managed threat detection service that ingests foundational data sources (CloudTrail, VPC Flow Logs, DNS logs) and optional protection plans covering EKS, RDS, S3, Lambda, and runtime workloads, generating findings when suspicious activity is detected.
-
-We then looked at the main finding type categories. Each finding follows the `ThreatPurpose:ResourceType/ThreatFamilyName` format and targets a specific AWS resource type, whether that is an EC2 instance, an IAM principal, an S3 bucket, a Kubernetes cluster, an RDS database, or a correlated attack sequence spanning multiple services.
-
-From there we explored suppression rules: filters that automatically archive matching findings without deleting them. They keep your active queue clean while preserving a 90-day audit trail, but broad rules can interfere with Extended Threat Detection's ability to correlate attack sequences, so specificity matters.
-
-We covered GuardDuty's IP sets and entity lists, explaining the distinction between trusted lists (which prevent findings from being generated for known-good sources) and threat intel lists (which force findings for known-bad sources you supply yourself).
-
-We then compared trusted lists against suppression rules directly, highlighting that the key difference is not just scope but mechanism: trusted lists suppress at the source level before a finding exists, while suppression rules operate after generation, giving you the archived record.
-
-Finally, we walked through a realistic example finding for `UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration.OutsideAWS` to show what GuardDuty's JSON output looks like in practice and which fields matter most when triaging or writing suppression logic.
 
 ---
 

@@ -225,24 +225,6 @@ Key fields to note:
 
 ---
 
-## Summary
-
-In this post we covered the core building blocks of Amazon Macie and how to use them to manage signal quality across your S3 data estate.
-
-We started with an overview of what Macie is: a managed data security service that monitors S3 buckets for misconfigurations and inspects object contents for sensitive data, using both automated discovery and on-demand jobs to build a picture of where sensitive data lives in your environment.
-
-We then looked at the two finding categories. Policy findings surface bucket-level misconfigurations such as public access or disabled encryption. Sensitive data findings report detected content inside objects, covering credentials, financial data, PII, PHI, and custom patterns you define yourself.
-
-From there we explored suppression rules: saved filter criteria that automatically archive matching findings without deleting them. They keep your active queue clean while preserving a 90-day audit trail, and prevent suppressed findings from being forwarded to Security Hub or EventBridge.
-
-We covered allow lists, explaining how they differ from suppression rules by operating at inspection time rather than after finding generation. Predefined text lists handle exact-match exemptions; regex lists handle pattern-based exemptions. Both prevent Macie from ever reporting the exempted content, keeping your sensitive data statistics accurate.
-
-We then compared allow lists against suppression rules directly, highlighting that allow lists handle content-level exemptions while suppression rules handle context-level ones. Using both together gives you precise control without losing the audit trail.
-
-Finally, we walked through a realistic example finding for `SensitiveData:S3Object/Credentials` to show what Macie's JSON output looks like in practice and which fields matter most when triaging or writing suppression logic.
-
----
-
 ## Further Reading
 
 - [What is Amazon Macie?](https://docs.aws.amazon.com/macie/latest/user/what-is-macie.html)
