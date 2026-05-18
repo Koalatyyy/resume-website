@@ -36,3 +36,6 @@ blog/_site/
 # Generated drafts and logs
 drafts/
 logs/
+
+# Local scripts
+scripts/generate-draft.py
