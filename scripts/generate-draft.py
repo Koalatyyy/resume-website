@@ -136,7 +136,10 @@ def fetch_aws_docs(topic: str) -> str:
             page_resp.raise_for_status()
             title = re.search(r"<title[^>]*>([^<]+)</title>", page_resp.text, re.IGNORECASE)
             title_text = title.group(1).strip() if title else url
-            text = re.sub(r"<[^>]+>", " ", page_resp.text)
+            raw = page_resp.text
+            raw = re.sub(r"<script[^>]*>.*?</script>", " ", raw, flags=re.IGNORECASE | re.DOTALL)
+            raw = re.sub(r"<style[^>]*>.*?</style>", " ", raw, flags=re.IGNORECASE | re.DOTALL)
+            text = re.sub(r"<[^>]+>", " ", raw)
             text = re.sub(r"\s+", " ", text).strip()
             excerpt = text[:budget_chars - total_chars]
             collected.append(f"## {title_text}\nSource: {url}\n\n{excerpt}")
