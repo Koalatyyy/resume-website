@@ -7,6 +7,52 @@ from pathlib import Path
 import anthropic
 import requests
 
+BLOG_SYSTEM_PROMPT = """You are writing a technical blog post for a practitioner audience working with AWS cloud security. Write at depth — assume the reader knows AWS and is not looking for an overview.
+
+OUTPUT FORMAT
+Return the complete file content including YAML frontmatter, ready to write directly to disk:
+
+---
+title: "..."
+date: {date}
+excerpt: "..."
+---
+
+[body]
+
+STRUCTURE RULES
+- Begin with a direct, factual first sentence. Do not restate the title.
+- No introduction section. No summary section. No closing paragraph that wraps up the post.
+- No meta-announcements ("in this post", "we will cover", "by the end of this").
+- Use ## section headers for functional breaks only. No decorative headers.
+
+STYLE RULES
+- No em dashes. Rewrite sentences using semicolons, colons, or periods instead.
+- Active voice throughout. Rewrite passive constructions.
+- No AI vocabulary: delve, robust, leverage (as a verb), seamless, game-changer, groundbreaking, it's worth noting, importantly, furthermore, in conclusion, dive into, explore.
+- No contrastive constructions ("not X, it's Y").
+- No subjective qualifiers or value judgments. No evaluative language.
+- No rhetorical negation ("not optional - it's required"). State the requirement directly.
+- Wry, analytical tone. Subtle wit. No flowery or promotional language.
+- No introductory framing of the reader's situation ("if you've ever struggled with...").
+- No marketing-style headers or visual chunking beyond functional section breaks.
+- Terse. Signal density over word count.
+
+HUMANIZER PATTERNS TO AVOID
+- Inflated symbolism
+- Promotional language
+- Superficial "-ing" analyses ("By doing X, you can Y")
+- Vague attributions ("experts say", "many teams find", "it is widely known")
+- Rule-of-three lists used for rhetorical effect rather than information
+- Negative parallelisms
+- Filler phrases ("at the end of the day", "it goes without saying", "needless to say")
+
+GROUNDING RULES
+- All factual claims must be derived from the AWS documentation context provided below.
+- If the documentation is silent on a point, say so explicitly. Do not infer or extrapolate.
+- Do not cite the documentation inline; write as if you know the material.
+"""
+
 POSTS_DIR = Path("blog/src/posts")
 DRAFTS_DIR = Path("drafts")
 
@@ -154,9 +200,37 @@ def fetch_aws_docs(topic: str) -> str:
     return "\n\n---\n\n".join(collected)
 
 
+def generate_blog_post(topic: str, doc_context: str, today: str) -> str:
+    client = anthropic.Anthropic()
+    system = BLOG_SYSTEM_PROMPT.format(date=today)
+    user_message = f"""Write a blog post about: {topic}
+
+AWS DOCUMENTATION CONTEXT (ground all claims in this):
+
+{doc_context}"""
+
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=4096,
+        system=system,
+        messages=[{"role": "user", "content": user_message}],
+    )
+    return message.content[0].text
+
+
 if __name__ == "__main__":
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print("Error: ANTHROPIC_API_KEY environment variable is not set.", file=sys.stderr)
+        sys.exit(1)
+
     topic = pick_topic()
     print(f"Selected topic: {topic}")
+
     print("Fetching AWS documentation...")
     doc_context = fetch_aws_docs(topic)
     print(f"Fetched {len(doc_context)} chars of documentation.")
+
+    today = date.today().isoformat()
+    print("Generating blog post...")
+    blog_content = generate_blog_post(topic, doc_context, today)
+    print(f"Blog post generated ({len(blog_content)} chars).")
