@@ -857,6 +857,12 @@ footer {
   font-weight: 500;
 }
 
+@media (max-width: 860px) {
+  .about-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   :root {
     --section-pad: 4rem;
@@ -895,10 +901,6 @@ footer {
 
   .about-grid {
     grid-template-columns: 1fr;
-  }
-
-  .about-stats {
-    grid-template-columns: repeat(4, 1fr);
   }
 
   .timeline-item {
@@ -957,6 +959,7 @@ footer {
 
   .hero-photo {
     order: -1;
+    margin-bottom: 1.25rem;
   }
 
   .profile-img {
@@ -1343,6 +1346,22 @@ footer {
 
   :root:not([data-theme="dark"]) .theme-toggle .icon-sun { display: none; }
   :root:not([data-theme="dark"]) .theme-toggle .icon-moon { display: block; }
+
+  :root:not([data-theme="dark"]) .hero {
+    background-image:
+      radial-gradient(ellipse 80% 55% at 50% -10%, rgba(3, 105, 161, 0.07) 0%, transparent 65%),
+      radial-gradient(circle, rgba(3, 105, 161, 0.08) 1px, transparent 1px);
+  }
+
+  :root:not([data-theme="dark"]) .timeline-item,
+  :root:not([data-theme="dark"]) .edu-card,
+  :root:not([data-theme="dark"]) .stat-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  :root:not([data-theme="dark"]) .tag-wip {
+    background: var(--accent-dim);
+  }
 }
 
 [data-theme="light"] {
@@ -1368,6 +1387,22 @@ footer {
 
 [data-theme="light"] .theme-toggle .icon-sun { display: none; }
 [data-theme="light"] .theme-toggle .icon-moon { display: block; }
+
+[data-theme="light"] .hero {
+  background-image:
+    radial-gradient(ellipse 80% 55% at 50% -10%, rgba(3, 105, 161, 0.07) 0%, transparent 65%),
+    radial-gradient(circle, rgba(3, 105, 161, 0.08) 1px, transparent 1px);
+}
+
+[data-theme="light"] .timeline-item,
+[data-theme="light"] .edu-card,
+[data-theme="light"] .stat-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .tag-wip {
+  background: var(--accent-dim);
+}
 
 /* ─── Terminal ─────────────────────────────────────────────────────────────── */
 
@@ -1664,7 +1699,7 @@ pre[class*="language-"] { border-radius: var(--radius); border: 1px solid var(--
 code[class*="language-"] { font-size: 0.875rem; }
 
 .blog-prose {
-  max-width: 680px;
+  max-width: 640px;
   margin-inline: auto;
   padding-block: calc(var(--nav-height) + 3rem) 4rem;
   padding-inline: 1.5rem;

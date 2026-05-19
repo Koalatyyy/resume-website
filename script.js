@@ -387,7 +387,7 @@ cmdList.querySelectorAll('.cmd-item').forEach(item => {
 const termToggle  = document.getElementById('termToggle');
 const termSection = document.getElementById('terminal');
 
-termToggle.addEventListener('click', e => {
+if (termToggle) termToggle.addEventListener('click', e => {
   e.preventDefault();
   const opening = termSection.hidden;
   termSection.hidden = !opening;
