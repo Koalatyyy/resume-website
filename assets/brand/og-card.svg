@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        src: url('data:font/woff2;base64,FONT_B64_PLACEHOLDER') format('woff2');
+      }
+    </style>
+    <clipPath id="photoClip">
+      <circle cx="1040" cy="315" r="150"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+
+  <!-- Dot grid pattern (right half, 8% opacity) -->
+  <defs>
+    <pattern id="dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#38bdf8"/>
+    </pattern>
+  </defs>
+  <rect x="600" y="0" width="600" height="630" fill="url(#dots)" opacity="0.08"/>
+
+  <!-- Full lockup, left-aligned, vertically centred -->
+  <!-- Name row -->
+  <text
+    x="80" y="268"
+    font-family="Inter, system-ui, sans-serif"
+    font-size="52"
+    letter-spacing="-1"
+  >
+    <tspan font-weight="400" fill="#f1f5f9">Thomas </tspan><tspan font-weight="700" fill="#38bdf8">Haggath</tspan>
+  </text>
+  <!-- Separator rule -->
+  <rect x="80" y="288" width="440" height="3" fill="#38bdf8"/>
+  <!-- Title row -->
+  <text
+    x="80" y="328"
+    font-family="Inter, system-ui, sans-serif"
+    font-weight="400"
+    font-size="26"
+    fill="#94a3b8"
+  >Senior AWS Cloud Engineer</text>
+
+  <!-- Profile photo placeholder — replaced by export script -->
+  <image id="profilePhoto" href="PHOTO_B64_PLACEHOLDER"
+         x="890" y="165" width="300" height="300"
+         clip-path="url(#photoClip)"
+         preserveAspectRatio="xMidYMid slice"/>
+
+  <!-- Domain watermark -->
+  <text
+    x="80" y="590"
+    font-family="Inter, system-ui, sans-serif"
+    font-weight="400"
+    font-size="18"
+    fill="#2d3f55"
+  >haggath.re</text>
+</svg>
