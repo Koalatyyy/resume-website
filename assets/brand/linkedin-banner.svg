@@ -16,23 +16,25 @@
   <!-- Accent stripe at 80% width -->
   <rect x="1267" y="40" width="4" height="316" fill="#38bdf8" opacity="0.6"/>
 
-  <!-- Name row, vertically centred (~198px midpoint, name row at ~170) -->
+  <!-- Name row, horizontally centred -->
   <text
-    x="100" y="175"
+    x="792" y="175"
     font-family="Inter, system-ui, sans-serif"
     font-size="58"
     letter-spacing="-1"
+    text-anchor="middle"
   >
     <tspan font-weight="400" fill="#f1f5f9">Thomas </tspan><tspan font-weight="700" fill="#38bdf8">Haggath</tspan>
   </text>
-  <!-- Separator rule -->
-  <rect x="100" y="195" width="500" height="3" fill="#38bdf8"/>
-  <!-- Title row -->
+  <!-- Separator rule, centred (500px wide → 542–1042) -->
+  <rect x="542" y="195" width="500" height="3" fill="#38bdf8"/>
+  <!-- Title row, horizontally centred -->
   <text
-    x="100" y="238"
+    x="792" y="238"
     font-family="Inter, system-ui, sans-serif"
     font-weight="400"
     font-size="30"
     fill="#94a3b8"
+    text-anchor="middle"
   >Senior AWS Cloud Engineer</text>
 </svg>
