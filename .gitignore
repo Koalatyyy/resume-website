@@ -39,3 +39,6 @@ logs/
 
 # Local scripts
 scripts/generate-draft.py
+
+node_modules/
+package-lock.json

@@ -1,9 +1,8 @@
 {
-  "name": "resume-website",
+  "name": "resume-website-tools",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "blog:dev": "cd blog && npx @11ty/eleventy --serve",
-    "blog:build": "cd blog && npx @11ty/eleventy"
+  "dependencies": {
+    "sharp": "^0.33.4"
   }
 }
